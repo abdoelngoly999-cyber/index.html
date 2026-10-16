@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b3d2e">
+<title>نور الدين</title>
+<style>
+:root{--g1:#0b3d2e;--g2:#146c51;--gold:#d4af37;--gold2:#f5d76e;--bg:#f6f3ec;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);min-height:100vh;}
+header{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:18px 16px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3);position:sticky;top:0;z-index:50;}
+header h1{font-size:26px;color:var(--gold2);text-shadow:0 2px 4px rgba(0,0,0,.4);}
+header p{font-size:13px;opacity:.9;margin-top:4px;}
+#clock{font-size:14px;color:var(--gold2);margin-top:4px;font-weight:bold;}
+.tabs{display:flex;background:var(--g1);overflow-x:auto;position:sticky;top:76px;z-index:49;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1;min-width:78px;padding:12px 6px;color:#cfe8dd;text-align:center;font-size:13px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;}
+.tab.active{color:var(--gold2);border-bottom-color:var(--gold);background:rgba(255,255,255,.06);font-weight:bold;}
+.page{display:none;padding:16px;padding-bottom:90px;animation:fade .3s;}
+.page.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(11,61,46,.1);border:1px solid #e8e0cf;}
+.card h2{color:var(--g1);font-size:19px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.card h2::before{content:"";width:6px;height:22px;background:var(--gold);border-radius:3px;}
+.big-clock{text-align:center;padding:24px 16px;background:linear-gradient(160deg,var(--g1),var(--g2));border-radius:18px;color:#fff;margin-bottom:14px;box-shadow:0 4px 15px rgba(11,61,46,.35);}
+.big-clock .time{font-size:46px;font-weight:bold;color:var(--gold2);font-variant-numeric:tabular-nums;}
+.big-clock .hijri{font-size:15px;opacity:.95;margin-top:6px;}
+.prayer-row{display:flex;justify-content:space-between;align-items:center;padding:12px 6px;border-bottom:1px dashed #ddd;font-size:17px;}
+.prayer-row:last-child{border:none;}
+.prayer-row .pname{font-weight:bold;color:var(--g1);}
+.prayer-row.next{background:linear-gradient(90deg,rgba(212,175,55,.15),transparent);border-radius:10px;padding:12px;border-bottom:none;outline:1px solid var(--gold);}
+.badge{background:var(--gold);color:var(--g1);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:bold;}
+.next-p{background:#fff;border:1px solid var(--gold);border-radius:14px;padding:14px;text-align:center;margin-bottom:14px;font-size:17px;color:var(--g1);font-weight:bold;box-shadow:0 2px 8px rgba(212,175,55,.2);}
+.btn{background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;border:none;padding:13px 20px;border-radius:12px;font-size:16px;cursor:pointer;width:100%;margin-top:8px;box-shadow:0 3px 8px rgba(11,61,46,.25);font-weight:bold;}
+.btn:active{transform:scale(.97);}
+.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--g1);}
+select,input{width:100%;padding:12px;border-radius:10px;border:1.5px solid #d8cfba;font-size:16px;margin-bottom:8px;background:#fff;color:#333;}
+.surah{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #e8e0cf;border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;}
+.surah:active{background:#f0ead8;}
+.surah .sname{font-weight:bold;color:var(--g1);font-size:16px;}
+.surah .info{font-size:12px;color:#888;}
+.playbtn{background:var(--g2);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:17px;cursor:pointer;}
+.search-box{margin-bottom:12px;}
+.name-chip{display:inline-block;background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--gold2);padding:10px 14px;border-radius:30px;margin:4px;font-size:15px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.15);}
+.hadith{background:#fffdf5;border-right:5px solid var(--gold);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.hadith .text{font-size:16px;line-height:1.9;color:#2d2a26;}
+.hadith .src{font-size:12.5px;color:#8a6d1d;margin-top:8px;font-weight:bold;}
+.hadith .cat{display:inline-block;background:var(--g1);color:#fff;font-size:11px;padding:2px 10px;border-radius:12px;margin-bottom:6px;}
+.chip{display:inline-block;background:#eee8d8;color:var(--g1);padding:8px 14px;border-radius:20px;margin:4px;font-size:14px;cursor:pointer;border:1px solid #ddd;}
+.chip.active{background:var(--g1);color:var(--gold2);}
+.advice{background:linear-gradient(135deg,#fff8e1,#ffefc2);border:1px solid var(--gold);border-radius:14px;padding:14px;margin-bottom:14px;font-size:16px;line-height:1.8;color:#5a4a12;}
+#playerBar{position:fixed;bottom:64px;left:0;right:0;background:var(--g1);color:#fff;padding:10px 14px;display:none;align-items:center;gap:10px;z-index:60;box-shadow:0 -3px 12px rgba(0,0,0,.3);}
+#playerBar.show{display:flex;}
+#playerBar .info{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+footer{text-align:center;padding:18px;background:var(--g1);color:#fff;font-size:14px;position:fixed;bottom:0;left:0;right:0;z-index:55;border-top:2px solid var(--gold);}
+footer b{color:var(--gold2);}
+.toast{position:fixed;top:90px;left:50%;transform:translateX(-50%);background:var(--g1);color:var(--gold2);padding:12px 24px;border-radius:30px;font-weight:bold;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:99;display:none;font-size:15px;}
+.toast.show{display:block;animation:fade .3s;}
+.player-ctrl{background:var(--gold);border:none;color:var(--g1);border-radius:50%;width:38px;height:38px;font-size:15px;cursor:pointer;font-weight:bold;}
+.names-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.dua{color:var(--g1);font-size:18px;line-height:2;text-align:center;font-weight:bold;}
+.small{font-size:12px;color:#999;text-align:center;margin-top:8px;}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<header>
+  <h1>🕌 نور الدين</h1>
+  <p>القرآن الكريم • الأحاديث • أسماء الله الحسنى • مواقيت الصلاة</p>
+  <div id="clock">--:--:--</div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-p="home">🏠 الرئيسية</div>
+  <div class="tab" data-p="prayer">🕐 الصلوات</div>
+  <div class="tab" data-p="quran">📖 القرآن</div>
+  <div class="tab" data-p="names">✨ الأسماء</div>
+  <div class="tab" data-p="hadith">📜 الأحاديث</div>
+  <div class="tab" data-p="azkar">🤲 أذكار</div>
+</div>
+
+<!-- ============ HOME ============ -->
+<div class="page active" id="p-home">
+  <div class="big-clock">
+    <div class="time" id="bigTime">--:--</div>
+    <div id="dayName">اليوم</div>
+    <div class="hijri" id="hijriDate">جاري التحميل...</div>
+  </div>
+  <div class="next-p" id="nextPrayer">⏳ جاري حساب مواقيت الصلاة...</div>
+  <div class="card">
+    <h2>حديث اليوم</h2>
+    <div class="hadith"><div class="text" id="dailyHadith"></div><div class="src" id="dailyHadithSrc"></div></div>
+  </div>
+  <div class="card">
+    <h2>نصيحة لطالب العلم</h2>
+    <div class="advice" id="dailyAdvice"></div>
+  </div>
+  <div class="card" style="text-align:center;">
+    <h2>الصلاة على النبي ﷺ</h2>
+    <p class="dua">اللهم صلِّ وسلم وبارك على سيدنا محمد ﷺ</p>
+    <p class="small">التذكير التلقائي كل 5 دقائق يعمل وأنت داخل التطبيق، وبإمكانك تفعيل إشعارات المتصفح</p>
+    <button class="btn gold" id="notifBtn">🔔 تفعيل التذكير الصوتي + الإشعارات</button>
+    <button class="btn" id="testSalawat">▶️ اختبر الصوت الآن</button>
+  </div>
+</div>
+
+<!-- ============ PRAYER ============ -->
+<div class="page" id="p-prayer">
+  <div class="card">
+    <h2>مواقيت الصلاة</h2>
+    <select id="citySelect">
+      <option value="auto">📍 تحديد موقعي تلقائياً (GPS)</option>
+      <option value="Cairo,Egypt">القاهرة</option>
+      <option value="Alexandria,Egypt">الإسكندرية</option>
+      <option value="Giza,Egypt">الجيزة</option>
+      <option value="Makkah,Saudi Arabia">مكة المكرمة</option>
+      <option value="Medina,Saudi Arabia">المدينة المنورة</option>
+      <option value="Riyadh,Saudi Arabia">الرياض</option>
+      <option value="Amman,Jordan">عمّان</option>
+      <option value="Jerusalem,Palestine">القدس</option>
+      <option value="Dubai,UAE">دبي</option>
+      <option value="Kuwait City,Kuwait">الكويت</option>
+      <option value="Doha,Qatar">الدوحة</option>
+      <option value="Manama,Bahrain">المنامة</option>
+      <option value="Muscat,Oman">مسقط</option>
+      <option value="Baghdad,Iraq">بغداد</option>
+      <option value="Damascus,Syria">دمشق</option>
+      <option value="Beirut,Lebanon">بيروت</option>
+      <option value="Khartoum,Sudan">الخرطوم</option>
+      <option value="Tripoli,Libya">طرابلس</option>
+      <option value="Tunis,Tunisia">تونس</option>
+      <option value="Algiers,Algeria">الجزائر</option>
+      <option value="Rabat,Morocco">الرباط</option>
+      <option value="Sanaa,Yemen">صنعاء</option>
+      <option value="Mogadishu,Somalia">مقديشو</option>
+    </select>
+    <button class="btn" id="locBtn">تحديد الموقع والمواقيت</button>
+    <div id="prayerTimes"></div>
+    <p class="small">المنهج: جامعة أم القرى — طريقة الحساب تلقائية حسب بلدك</p>
+  </div>
+</div>
+
+<!-- ============ QURAN ============ -->
+<div class="page" id="p-quran">
+  <div class="card">
+    <h2>القرآن الكريم — استماع</h2>
+    <label style="font-size:14px;color:#666;">اختر الشيخ (القارئ):</label>
+    <select id="reciter">
+      <option value="maher|server12.mp3quran.net/maher">🎙️ ماهر المعيقلي</option>
+      <option value="afs|server8.mp3quran.net/afs">🎙️ مشاري العفاسي</option>
+      <option value="basit|server7.mp3quran.net/basit">🎙️ عبد الباسط عبد الصمد</option>
+      <option value="minsh|server10.mp3quran.net/minsh">🎙️ محمد المنشاوي</option>
+      <option value="sds|server11.mp3quran.net/sds">🎙️ عبد الرحمن السديس</option>
+      <option value="shur|server7.mp3quran.net/shur">🎙️ سعود الشريم</option>
+      <option value="hanir|server8.mp3quran.net/hani">🎙️ هاني الرفاعي</option>
+      <option value="ayman|server16.mp3quran.net/ayman">🎙️ أيمن سويد</option>
+    </select>
+    <input class="search-box" id="surahSearch" placeholder="🔍 ابحث عن سورة... (مثال: الكهف)">
+    <div id="surahList" style="max-height:420px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- ============ NAMES ============ -->
+<div class="page" id="p-names">
+  <div class="card">
+    <h2>أسماء الله الحسنى (٩٩)</h2>
+    <p class="small" style="margin-bottom:12px;">قال ﷺ: «إن لله تسعة وتسعين اسماً، مائة إلا واحداً، من أحصاها دخل الجنة» — متفق عليه</p>
+    <div class="names-grid" id="namesGrid"></div>
+  </div>
+</div>
+
+<!-- ============ HADITH ============ -->
+<div class="page" id="p-hadith">
+  <div class="card">
+    <h2>الأربعون النووية</h2>
+    <div id="nawawiList"></div>
+  </div>
+  <div class="card">
+    <h2>أحاديث موضوعية</h2>
+    <div style="margin-bottom:10px;">
+      <span class="chip active" data-c="all">الكل</span>
+      <span class="chip" data-c="mawarith">الميراث والتركة</span>
+      <span class="chip" data-c="salah">الصلاة</span>
+      <span class="chip" data-c="zakat">الزكاة والصدقة</span>
+      <span class="chip" data-c="akhlak">الأخلاق</span>
+      <span class="chip" data-c="muamalat">المعاملات</span>
+      <span class="chip" data-c="siyam">الصيام</span>
+      <span class="chip" data-c="hajj">الحج</span>
+      <span class="chip" data-c="tahara">الطهارة</span>
+      <span class="chip" data-c="jihad">الجهاد</span>
+      <span class="chip" data-c="sabr">الصبر والرضا</span>
+    </div>
+    <div id="topicList"></div>
+  </div>
+</div>
+
+<!-- ============ AZKAR ============ -->
+<div class="page" id="p-azkar">
+  <div class="card">
+    <h2>الصلاة على النبي ﷺ</h2>
+    <p class="dua">اللهم صلِّ على محمد وعلى آل محمد، كما صليت على إبراهيم وعلى آل إبراهيم، إنك حميد مجيد، وبارك على محمد وعلى آل محمد، كما باركت على إبراهيم وعلى آل إبراهيم، إنك حميد مجيد</p>
+    <button class="btn gold" onclick="playSalawat(true)">▶️ استمع بالصوت</button>
+  </div>
+  <div class="card">
+    <h2>أذكار الصباح</h2>
+    <div id="azkarSabah"></div>
+  </div>
+  <div class="card">
+    <h2>أذكار المساء</h2>
+    <div id="azkarMasaa"></div>
+  </div>
+</div>
+
+<div id="playerBar">
+  <button class="player-ctrl" id="playPauseBtn">⏸️</button>
+  <div class="info" id="playerInfo">جاري التشغيل...</div>
+  <button class="player-ctrl" onclick="stopAudio()">⏹️</button>
+</div>
+
+<audio id="quranAudio"></audio>
+<audio id="clickSnd" src="https://www.islamicnetwork.com/audio/click.mp3"></audio>
+<div class="toast" id="toast"></div>
+<footer>جميع الحقوق محفوظة © <b>Omar Elnogoly</b></footer>
+
+<script>
+/* ================= DATA ================= */
+const SURAHS=[["الفاتحة",7,"مكية"],["البقرة",286,"مدنية"],["آل عمران",200,"مدنية"],["النساء",176,"مدنية"],["المائدة",120,"مدنية"],["الأنعام",165,"مكية"],["الأعراف",206,"مكية"],["الأنفال",75,"مدنية"],["التوبة",129,"مدنية"],["يونس",109,"مكية"],["هود",123,"مكية"],["يوسف",111,"مكية"],["الرعد",43,"مدنية"],["إبراهيم",52,"مكية"],["الحجر",99,"مكية"],["النحل",128,"مكية"],["الإسراء",111,"مكية"],["الكهف",110,"مكية"],["مريم",98,"مكية"],["طه",135,"مكية"],["الأنبياء",112,"مكية"],["الحج",78,"مدنية"],["المؤمنون",118,"مكية"],["النور",64,"مدنية"],["الفرقان",77,"مكية"],["الشعراء",227,"مكية"],["النمل",93,"مكية"],["القصص",88,"مكية"],["العنكبوت",69,"مكية"],["الروم",60,"مكية"],["لقمان",34,"مكية"],["السجدة",30,"مكية"],["الأحزاب",73,"مدنية"],["سبأ",54,"مكية"],["فاطر",45,"مكية"],["يس",83,"مكية"],["الصافات",182,"مكية"],["ص",88,"مكية"],["الزمر",75,"مكية"],["غافر",85,"مكية"],["فصلت",54,"مكية"],["الشورى",53,"مكية"],["الزخرف",89,"مكية"],["الدخان",59,"مكية"],["الجاثية",37,"مكية"],["الأحقاف",35,"مكية"],["محمد",38,"مدنية"],["الفتح",29,"مدنية"],["الحجرات",18,"مدنية"],["ق",45,"مكية"],["الذاريات",60,"مكية"],["الطور",49,"مكية"],["النجم",62,"مكية"],["القمر",55,"مكية"],["الرحمن",78,"مدنية"],["الواقعة",96,"مكية"],["الحديد",29,"مدنية"],["المجادلة",22,"مدنية"],["الحشر",24,"مدنية"],["الممتحنة",13,"مدنية"],["الصف",14,"مدنية"],["الجمعة",11,"مدنية"],["المنافقون",11,"مدنية"],["التغابن",18,"مدنية"],["الطلاق",12,"مدنية"],["التحريم",12,"مدنية"],["الملك",30,"مكية"],["القلم",52,"مكية"],["الحاقة",52,"مكية"],["المعارج",44,"مكية"],["نوح",28,"مكية"],["الجن",28,"مكية"],["المزمل",20,"مكية"],["المدثر",56,"مكية"],["القيامة",40,"مكية"],["الإنسان",31,"مدنية"],["المرسلات",50,"مكية"],["النبأ",40,"مكية"],["النازعات",46,"مكية"],["عبس",42,"مكية"],["التكوير",29,"مكية"],["الانفطار",19,"مكية"],["المطففين",36,"مكية"],["الانشقاق",25,"مكية"],["البروج",22,"مكية"],["الطارق",17,"مكية"],["الأعلى",19,"مكية"],["الغاشية",26,"مكية"],["الفجر",30,"مكية"],["البلد",20,"مكية"],["الشمس",15,"مكية"],["الليل",21,"مكية"],["الضحى",11,"مكية"],["الشرح",8,"مكية"],["التين",8,"مكية"],["العلق",19,"مكية"],["القدر",5,"مكية"],["البينة",8,"مدنية"],["الزلزلة",8,"مدنية"],["العاديات",11,"مكية"],["القارعة",11,"مكية"],["التكاثر",8,"مكية"],["العصر",3,"مكية"],["الهمزة",9,"مكية"],["الفيل",5,"مكية"],["قريش",4,"مكية"],["الماعون",7,"مكية"],["الكوثر",3,"مكية"],["الكافرون",6,"مكية"],["النصر",3,"مدنية"],["المسد",5,"مكية"],["الإخلاص",4,"مكية"],["الفلق",5,"مكية"],["الناس",6,"مكية"]];
+const NAMES=["الله","الرحمن","الرحيم","الملك","القدوس","السلام","المؤمن","المهيمن","العزيز","الجبار","المتكبر","الخالق","البارئ","المصور","الغفار","القهار","الوهاب","الرزاق","الفتاح","العليم","القابض","الباسط","الخافض","الرافع","المعز","المذل","السميع","البصير","الحكم","العدل","اللطيف","الخبير","الحليم","العظيم","الغفور","الشكور","العلي","الكبير","الحفيظ","المقيت","الحسيب","الجليل","الكريم","الرقيب","المجيب","الواسع","الحكيم","الودود","المجيد","الباعث","الشهيد","الحق","الوكيل","القوي","المتين","الولي","الحميد","المحصي","المبدئ","المعيد","المحيي","المميت","الحي","القيوم","الواجد","الماجد","الواحد","الصمد","القادر","المقتدر","المقدم","المؤخر","الأول","الآخر","الظاهر","الباطن","الوالي","المتعالي","البر","التواب","المنتقم","العفو","الرؤوف","مالك الملك","ذو الجلال والإكرام","المقسط","الجامع","الغني","المغني","المانع","الضار","النافع","النور","الهدي","البديع","الباقي","الوارث","الرشيد","الصبور"];
+const NAWAWI=[
+["إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى","متفق عليه"],
+["الإسلام أن تشهد أن لا إله إلا الله وأن محمداً رسول الله، وتقيم الصلاة، وتؤتي الزكاة، وتصوم رمضان، وتحج البيت إن استطعت إليه سبيلا","متفق عليه"],
+["بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمداً رسول الله، وإقام الصلاة، وإيتاء الزكاة، وصوم رمضان، وحج البيت من استطاع إليه سبيلا","متفق عليه"],
+["يولد الناس على الفطرة، فأبواه يهودانه أو ينصرانه أو يمجسانه","متفق عليه"],
+["ما نهيتكم عنه فاجتنبوه، وما أمرتكم به فأتوا منه ما استطعتم","متفق عليه"],
+["من أحدث في أمرنا هذا ما ليس منه فهو رد","متفق عليه"],
+["إن الحلال بين وإن الحرام بين، وبينهما أمور مشتبهات","متفق عليه"],
+["من صلى البردين دخل الجنة","متفق عليه"],
+["الدين النصيحة — قلنا: لمن؟ قال: لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم","رواه مسلم"],
+["الحج مرة، فما زاد فتطوع","رواه مسلم"],
+["لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه","متفق عليه"],
+["يحمل هذا العلم من كل خلف عدوله ينفون عنه تحريف الغالين وتأويل الجاهلين وانتحال المبطلين","رواه أبو داود والترمذي"],
+["من سن في الإسلام سنة حسنة فله أجرها وأجر من عمل بها إلى يوم القيامة","متفق عليه"],
+["إذا كان يوم القيامة يغنى رب الناس بذنوب بعضهم يقتص من بعض","متفق عليه"],
+["ما ذئبان جائعان أرسلا في غنم بأفسد لها من حرص المرء على المال والشرف لدينه","رواه الترمذي"],
+["لا تغضب — قال لي ذلك مرة فمرة — قال: لا تغضب","رواه البخاري"],
+["اللهم آتني حسنات المستقبل واصرف عني سيئاتها","رواه ابن ماجه"],
+["الزهد في الدنيا التماس العافية فيها، والزهد في الآخرة التماس ما فيها","رواه الترمذي"],
+["احفظ الله يحفظك، احفظ الله تجده تجاهك، إذا سألت فاسأل الله، وإذا استعنت فاستعن بالله","رواه الترمذي"],
+["اتق الله حيثما كنت، وأتبع السيئة الحسنة تمحها، وخالق الناس بخلق حسن","رواه الترمذي"],
+["لا ضرر ولا ضرار — حديث عظيم","رواه ابن ماجه"],
+["إن الله طيب لا يقبل إلا طيبا","رواه مسلم"],
+["الدين يسر، ولن يشاد الدين أحد إلا غلبه","رواه البخاري"],
+["إذا لقي أحدكم أهل الكتاب فلا يبدؤه بالسلام، وإذا لقيكم فقولوا: آمنا بالله","متفق عليه"],
+["كن في الدنيا كأنك غريب أو عابر سبيل","رواه البخاري"],
+["الفطرة خمس: الختان، والاستحداد، ونتف الإبط، وقص الشارب، وتقليم الأظفار","متفق عليه"],
+["فيما سقت السماء فيه العشر، وما سقي النقع فيه نصف العشر","متفق عليه — في الميراث"],
+["الأعمال بالخواتيم — من صلى بنا صلاة العشاء الأخيرة فهو كقيام ليلة","متفق عليه"],
+["أعف الناس قليل الحاجة، وأجود الناس أحسنهم عيشا","رواه البخاري"],
+["لن تدخل الجنة حتى تؤمنوا، ولن تؤمنوا حتى تحابوا","رواه مسلم"],
+["أحب الناس إلى الله أنفعهم لأهل الإسلام","رواه الطبراني"],
+["لا يحل دم امرئ مسلم إلا بإحدى ثلاث: الثيب الزاني، والنفس بالنفس، والتارك لدينه المفارق للجماعة","متفق عليه"],
+["من كانت عنده مظلمة فليتحلل منها وإن لم تكن إلا شاة","رواه البخاري"],
+["من غشنا فليس منا","رواه مسلم"],
+["من رأى منكم منكراً فليغيره بيده، فإن لم يستطع فبلسانه، فإن لم يستطع فبقلبه وذلك أضعف الإيمان","رواه مسلم"],
+["من خير أمتي من أحسنهم خلقا، وأسهل الناس مؤونة","رواه ابن ماجه"],
+["إن الله يبغض العياط في المصيبة","رواه أبو داود"],
+["من التأني في كل شيء إلا في عمل الآخرة","رواه ابن ماجه"],
+["الدنيا دار من لا دار له، ومال من لا مال له، ولهذا يربى فيها أغنياءها ويفقر فيها فقراؤها","رواه الترمذي"],
+["الصدقة تطفئ الخطيئة كما يطفئ الماء النار","رواه الترمذي"],
+["استقيموا ولن تحصوا، واعلموا أن خير أعمالكم الصلاة، ولا يحافظ على الوضوء إلا مؤمن","رواه ابن ماجه"],
+["الطهور شطر الإيمان، والحمد لله تملأ الميزان","رواه الترمذي"],
+["الصلاة نور، والصدقة برهان، والصبر ضياء","رواه مسلم"],
+["رضا الله في رضا الوالدين، وسخط الله في سخط الوالدين","رواه الترمذي"],
+["أد ما أخذت وخذ ما أُدّي","رواه أبو داود"],
+["المسلم من سلم الناس من لسانه ويده","متفق عليه"],
+["من أراد أن يكون أقوى الناس فليتوكل على الله","رواه ابن ماجه"],
+["الحياء لا يأتي إلا بخير","متفق عليه"],
+["الإيمان بضع وسبعون شعبة أعلاها كلمة لا إله إلا الله وأدناها إماطة الأذى عن الطريق","رواه مسلم"]];
+const TOPICS=[
+["mawarith","أطيلوا النظر في أحدكما أصله ولده وأصله أخوه وأصله عمه — إذا لم يكن ولد ولا أب ولا جد","رواه أبو داود والترمذي — في علم الميراث"],
+["mawarith","«يغنى رب الناس بذنوب بعضهم ي
